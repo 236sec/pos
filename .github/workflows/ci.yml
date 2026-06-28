@@ -10,11 +10,8 @@ env:
   SQLX_OFFLINE: true
 
 jobs:
-  ci:
+  backend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -25,3 +22,15 @@ jobs:
       - run: cargo clippy -- -D warnings
       - run: cargo build --verbose
       - run: cargo test --verbose
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run type-check
