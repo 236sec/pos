@@ -12,7 +12,11 @@ pub fn create_app(app_state: AppState) -> Router {
     init_tracing();
 
     let cors = CorsLayer::new()
-        .allow_origin("http://localhost:5173".parse::<http::HeaderValue>().unwrap())
+        .allow_origin(
+            "http://localhost:5173"
+                .parse::<http::HeaderValue>()
+                .unwrap(),
+        )
         .allow_methods([http::Method::POST, http::Method::GET])
         .allow_headers([CONTENT_TYPE, AUTHORIZATION])
         .allow_credentials(true);

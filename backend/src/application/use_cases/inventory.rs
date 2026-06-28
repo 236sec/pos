@@ -24,7 +24,9 @@ impl InventoryUseCases {
     pub async fn adjust(&self, ingredient_name: &str, delta: i64) -> AppResult<()> {
         info!("Adjusting inventory...");
 
-        self.persistence.adjust_stock(ingredient_name, delta).await?;
+        self.persistence
+            .adjust_stock(ingredient_name, delta)
+            .await?;
 
         info!("Adjusting inventory finished.");
 

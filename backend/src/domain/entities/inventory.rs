@@ -1,5 +1,5 @@
-use uuid::Uuid;
 use crate::domain::primitives::Quantity;
+use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 pub struct StockItem {

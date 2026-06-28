@@ -1,5 +1,5 @@
-use std::sync::Arc;
 use axum::extract::FromRef;
+use std::sync::Arc;
 
 use crate::application::use_cases::auth::AuthUseCases;
 use crate::application::use_cases::inventory::InventoryUseCases;
@@ -23,29 +23,43 @@ pub struct AppState {
 }
 
 impl FromRef<AppState> for Arc<AuthUseCases> {
-    fn from_ref(state: &AppState) -> Self { state.auth_use_cases.clone() }
+    fn from_ref(state: &AppState) -> Self {
+        state.auth_use_cases.clone()
+    }
 }
 
 impl FromRef<AppState> for Arc<PosUseCases> {
-    fn from_ref(state: &AppState) -> Self { state.pos_use_cases.clone() }
+    fn from_ref(state: &AppState) -> Self {
+        state.pos_use_cases.clone()
+    }
 }
 
 impl FromRef<AppState> for Arc<MenuUseCases> {
-    fn from_ref(state: &AppState) -> Self { state.menu_use_cases.clone() }
+    fn from_ref(state: &AppState) -> Self {
+        state.menu_use_cases.clone()
+    }
 }
 
 impl FromRef<AppState> for Arc<InventoryUseCases> {
-    fn from_ref(state: &AppState) -> Self { state.inventory_use_cases.clone() }
+    fn from_ref(state: &AppState) -> Self {
+        state.inventory_use_cases.clone()
+    }
 }
 
 impl FromRef<AppState> for Arc<ProcurementUseCases> {
-    fn from_ref(state: &AppState) -> Self { state.procurement_use_cases.clone() }
+    fn from_ref(state: &AppState) -> Self {
+        state.procurement_use_cases.clone()
+    }
 }
 
 impl FromRef<AppState> for Arc<ReportUseCases> {
-    fn from_ref(state: &AppState) -> Self { state.report_use_cases.clone() }
+    fn from_ref(state: &AppState) -> Self {
+        state.report_use_cases.clone()
+    }
 }
 
 impl FromRef<AppState> for Arc<NotificationUseCases> {
-    fn from_ref(state: &AppState) -> Self { state.notification_use_cases.clone() }
+    fn from_ref(state: &AppState) -> Self {
+        state.notification_use_cases.clone()
+    }
 }

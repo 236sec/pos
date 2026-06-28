@@ -2,10 +2,7 @@ use std::{fs::File, sync::Arc};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::{
-    adapters::{
-        http::app_state::AppState,
-        persistence::PostgresPersistence,
-    },
+    adapters::{http::app_state::AppState, persistence::PostgresPersistence},
     application::use_cases::{
         auth::AuthUseCases, inventory::InventoryUseCases, menu::MenuUseCases,
         notification::NotificationUseCases, pos::PosUseCases, procurement::ProcurementUseCases,
@@ -40,13 +37,10 @@ pub async fn init_app_state() -> anyhow::Result<AppState> {
 }
 
 pub fn init_tracing() {
-    let filter = EnvFilter::try_from_default_env()
-        .unwrap_or_else(|_| "pos=debug,tower_http=debug".into());
+    let filter =
+        EnvFilter::try_from_default_env().unwrap_or_else(|_| "pos=debug,tower_http=debug".into());
 
-    let console_layer = fmt::layer()
-        .with_target(false)
-        .with_level(true)
-        .pretty();
+    let console_layer = fmt::layer().with_target(false).with_level(true).pretty();
 
     let file = File::create("app.log").expect("cannot create log file");
     let json_layer = fmt::layer()
