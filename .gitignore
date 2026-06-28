@@ -1,0 +1,5 @@
+/target
+.env
+app.log
+**/*.rs.bk
+*.pdb
