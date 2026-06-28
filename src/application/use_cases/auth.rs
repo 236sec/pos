@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use async_trait::async_trait;
-use secrecy::SecretString;
+use secrecy::{ExposeSecret, SecretString};
 use tracing::{info, instrument};
 
 use crate::application::app_error::AppResult;
