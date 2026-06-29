@@ -10,8 +10,8 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const variantClasses: Record<BadgeVariant, string> = {
   default: "bg-primary text-primary-foreground hover:bg-primary/80",
-  success: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100",
-  warning: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100",
+  success: "bg-emerald-400/15 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
+  warning: "bg-amber-400/15 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
   destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/80",
   outline: "text-foreground border",
 };
