@@ -47,12 +47,19 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(getStoredTheme);
+  // Always start with "light" to match SSR. The flash script in <head>
+  // already applied the correct class before hydration, and this
+  // useEffect resolves to the actual stored/system preference on mount.
+  const [theme, setThemeState] = useState<Theme>("light");
 
-  // Sync class on mount (in case the flash script set it differently)
+  // Resolve actual theme on mount (matches what the flash script already applied).
+  // setTheme / toggleTheme / OS listener all call applyTheme directly, so no
+  // separate theme-watching effect is needed.
   useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
+    const stored = getStoredTheme();
+    setThemeState(stored);
+    applyTheme(stored);
+  }, []);
 
   // Listen for OS preference changes when no explicit choice stored
   useEffect(() => {
