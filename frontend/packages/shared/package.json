@@ -10,7 +10,8 @@
     "./types": "./src/types/index.ts",
     "./api": "./src/api/index.ts",
     "./ui": "./src/ui/index.ts",
-    "./i18n": "./src/i18n/index.ts"
+    "./i18n": "./src/i18n/index.ts",
+    "./hooks": "./src/hooks/index.ts"
   },
   "scripts": {
     "build": "tsc",
