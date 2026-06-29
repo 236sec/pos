@@ -79,13 +79,13 @@ impl FloorPlanUseCases {
             .await?
             .ok_or_else(|| AppError::NotFound(format!("Table {} not found", id)))?;
 
-        let allowed = match (table.status.as_str(), new_status) {
-            ("available", "occupied") => true,
-            ("available", "reserved") => true,
-            ("occupied", "dirty") => true,
-            ("dirty", "available") => true,
-            _ => false,
-        };
+        let allowed = matches!(
+            (table.status.as_str(), new_status),
+            ("available", "occupied")
+                | ("available", "reserved")
+                | ("occupied", "dirty")
+                | ("dirty", "available")
+        );
 
         if !allowed {
             return Err(AppError::Internal(format!(
