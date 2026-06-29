@@ -10,6 +10,12 @@ pub enum AppError {
 
     #[error("Not found: {0}")]
     NotFound(String),
+
+    #[error("Authentication failed: {0}")]
+    AuthenticationError(String),
+
+    #[error("Authorization denied: {0}")]
+    AuthorizationError(String),
 }
 
 pub type AppResult<T> = Result<T, AppError>;

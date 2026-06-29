@@ -16,6 +16,12 @@ impl IntoResponse for AppError {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal error").into_response()
             }
             AppError::NotFound(_) => (StatusCode::NOT_FOUND, "Not found").into_response(),
+            AppError::AuthenticationError(msg) => {
+                (StatusCode::UNAUTHORIZED, msg).into_response()
+            }
+            AppError::AuthorizationError(msg) => {
+                (StatusCode::FORBIDDEN, msg).into_response()
+            }
         }
     }
 }
