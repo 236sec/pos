@@ -50,9 +50,7 @@ async fn create_item(
 }
 
 #[instrument(skip(state))]
-async fn get_all_items(
-    State(state): State<Arc<MenuUseCases>>,
-) -> AppResult<Json<Value>> {
+async fn get_all_items(State(state): State<Arc<MenuUseCases>>) -> AppResult<Json<Value>> {
     let items = state.get_all_items().await?;
     Ok(Json(json!(items)))
 }
@@ -88,9 +86,7 @@ async fn delete_item(
 // ── Categories ──
 
 #[instrument(skip(state))]
-async fn get_all_categories(
-    State(state): State<Arc<MenuUseCases>>,
-) -> AppResult<Json<Value>> {
+async fn get_all_categories(State(state): State<Arc<MenuUseCases>>) -> AppResult<Json<Value>> {
     let categories = state.get_all_categories().await?;
     Ok(Json(json!(categories)))
 }

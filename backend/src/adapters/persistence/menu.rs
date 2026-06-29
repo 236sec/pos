@@ -7,7 +7,7 @@ use crate::{
     application::{
         app_error::{AppError, AppResult},
         use_cases::menu::{
-            ChannelPriceInput, CreateItemInput, MenuPersistence, ModifierOptionInput,
+            ChannelPriceInput, CreateItemInput, MenuPersistence, ModifierGroupInput,
             UpdateItemInput,
         },
     },
@@ -101,9 +101,10 @@ impl MenuPersistence for PostgresPersistence {
         tx.commit().await?;
 
         // Fetch the freshly created item with category_name = NULL
-        let item = self.get_item_by_id(item_id).await?.ok_or_else(|| {
-            AppError::Internal("Created item not found after insert".into())
-        })?;
+        let item = self
+            .get_item_by_id(item_id)
+            .await?
+            .ok_or_else(|| AppError::Internal("Created item not found after insert".into()))?;
 
         Ok(item)
     }
@@ -148,10 +149,12 @@ impl MenuPersistence for PostgresPersistence {
         let now = Utc::now();
 
         // Check item exists
-        let existing = sqlx::query_scalar::<_, i64>("SELECT 1 FROM menu_items WHERE id = $1 AND deleted_at IS NULL")
-            .bind(id)
-            .fetch_optional(&mut *tx)
-            .await?;
+        let existing = sqlx::query_scalar::<_, i64>(
+            "SELECT 1 FROM menu_items WHERE id = $1 AND deleted_at IS NULL",
+        )
+        .bind(id)
+        .fetch_optional(&mut *tx)
+        .await?;
 
         if existing.is_none() {
             return Err(AppError::NotFound(format!("Menu item {} not found", id)));
@@ -351,7 +354,10 @@ impl MenuPersistence for PostgresPersistence {
         .rows_affected();
 
         if rows == 0 {
-            return Err(AppError::NotFound(format!("Menu category {} not found", id)));
+            return Err(AppError::NotFound(format!(
+                "Menu category {} not found",
+                id
+            )));
         }
 
         Ok(MenuCategory {
@@ -394,7 +400,10 @@ impl MenuPersistence for PostgresPersistence {
         .rows_affected();
 
         if rows == 0 {
-            return Err(AppError::NotFound(format!("Menu category {} not found", id)));
+            return Err(AppError::NotFound(format!(
+                "Menu category {} not found",
+                id
+            )));
         }
 
         Ok(())
@@ -439,12 +448,7 @@ impl MenuPersistence for PostgresPersistence {
     async fn create_modifier_group(
         &self,
         item_id: Uuid,
-        name: &str,
-        name_en: &str,
-        selection_type: &str,
-        is_required: bool,
-        sort_order: i32,
-        options: &[ModifierOptionInput],
+        input: &ModifierGroupInput,
     ) -> AppResult<ModifierGroup> {
         let mut tx = self.pool.begin().await?;
         let now = Utc::now();
@@ -458,16 +462,16 @@ impl MenuPersistence for PostgresPersistence {
         )
         .bind(group_id)
         .bind(item_id)
-        .bind(name)
-        .bind(name_en)
-        .bind(selection_type)
-        .bind(is_required)
-        .bind(sort_order)
+        .bind(&input.name)
+        .bind(&input.name_en)
+        .bind(&input.selection_type)
+        .bind(input.is_required)
+        .bind(input.sort_order)
         .bind(now)
         .execute(&mut *tx)
         .await?;
 
-        for opt_input in options {
+        for opt_input in &input.options {
             let opt_id = Uuid::new_v4();
             sqlx::query(
                 r#"
@@ -491,11 +495,11 @@ impl MenuPersistence for PostgresPersistence {
         Ok(ModifierGroup {
             id: group_id,
             menu_item_id: item_id,
-            name: name.to_string(),
-            name_en: name_en.to_string(),
-            selection_type: selection_type.to_string(),
-            is_required,
-            sort_order,
+            name: input.name.clone(),
+            name_en: input.name_en.clone(),
+            selection_type: input.selection_type.clone(),
+            is_required: input.is_required,
+            sort_order: input.sort_order,
             deleted_at: None,
             created_at: now,
             updated_at: now,
@@ -505,12 +509,7 @@ impl MenuPersistence for PostgresPersistence {
     async fn update_modifier_group(
         &self,
         id: Uuid,
-        name: &str,
-        name_en: &str,
-        selection_type: &str,
-        is_required: bool,
-        sort_order: i32,
-        options: &[ModifierOptionInput],
+        input: &ModifierGroupInput,
     ) -> AppResult<ModifierGroup> {
         let mut tx = self.pool.begin().await?;
         let now = Utc::now();
@@ -534,11 +533,11 @@ impl MenuPersistence for PostgresPersistence {
             WHERE id = $7
             "#,
         )
-        .bind(name)
-        .bind(name_en)
-        .bind(selection_type)
-        .bind(is_required)
-        .bind(sort_order)
+        .bind(&input.name)
+        .bind(&input.name_en)
+        .bind(&input.selection_type)
+        .bind(input.is_required)
+        .bind(input.sort_order)
         .bind(now)
         .bind(id)
         .execute(&mut *tx)
@@ -550,7 +549,7 @@ impl MenuPersistence for PostgresPersistence {
             .execute(&mut *tx)
             .await?;
 
-        for opt_input in options {
+        for opt_input in &input.options {
             let opt_id = Uuid::new_v4();
             sqlx::query(
                 r#"
@@ -574,11 +573,11 @@ impl MenuPersistence for PostgresPersistence {
         Ok(ModifierGroup {
             id,
             menu_item_id,
-            name: name.to_string(),
-            name_en: name_en.to_string(),
-            selection_type: selection_type.to_string(),
-            is_required,
-            sort_order,
+            name: input.name.clone(),
+            name_en: input.name_en.clone(),
+            selection_type: input.selection_type.clone(),
+            is_required: input.is_required,
+            sort_order: input.sort_order,
             deleted_at: None,
             created_at: now,
             updated_at: now,
@@ -597,7 +596,10 @@ impl MenuPersistence for PostgresPersistence {
         .rows_affected();
 
         if rows == 0 {
-            return Err(AppError::NotFound(format!("Modifier group {} not found", id)));
+            return Err(AppError::NotFound(format!(
+                "Modifier group {} not found",
+                id
+            )));
         }
 
         Ok(())

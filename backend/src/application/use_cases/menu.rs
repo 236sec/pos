@@ -7,7 +7,9 @@ use tracing::{info, instrument};
 use uuid::Uuid;
 
 use crate::application::app_error::{AppError, AppResult};
-use crate::domain::entities::menu::{ChannelPrice, MenuCategory, MenuItem, ModifierGroup, ModifierOption};
+use crate::domain::entities::menu::{
+    ChannelPrice, MenuCategory, MenuItem, ModifierGroup, ModifierOption,
+};
 
 // ── Input types ───────────────────────────────────────────────────────────
 
@@ -121,22 +123,12 @@ pub trait MenuPersistence: Send + Sync {
     async fn create_modifier_group(
         &self,
         item_id: Uuid,
-        name: &str,
-        name_en: &str,
-        selection_type: &str,
-        is_required: bool,
-        sort_order: i32,
-        options: &[ModifierOptionInput],
+        input: &ModifierGroupInput,
     ) -> AppResult<ModifierGroup>;
     async fn update_modifier_group(
         &self,
         id: Uuid,
-        name: &str,
-        name_en: &str,
-        selection_type: &str,
-        is_required: bool,
-        sort_order: i32,
-        options: &[ModifierOptionInput],
+        input: &ModifierGroupInput,
     ) -> AppResult<ModifierGroup>;
     async fn soft_delete_modifier_group(&self, id: Uuid) -> AppResult<()>;
 
@@ -193,10 +185,7 @@ impl MenuUseCases {
             .await?
             .ok_or_else(|| AppError::NotFound(format!("Menu item {} not found", id)))?;
 
-        let groups = self
-            .persistence
-            .get_modifier_groups_for_item(id)
-            .await?;
+        let groups = self.persistence.get_modifier_groups_for_item(id).await?;
 
         let mut modifier_groups = Vec::with_capacity(groups.len());
         for group in groups {
@@ -213,10 +202,7 @@ impl MenuUseCases {
             });
         }
 
-        let channel_prices = self
-            .persistence
-            .get_channel_prices_for_item(id)
-            .await?;
+        let channel_prices = self.persistence.get_channel_prices_for_item(id).await?;
 
         Ok(MenuItemDetail {
             id: item.id,
@@ -314,25 +300,12 @@ impl MenuUseCases {
     pub async fn create_modifier_group(
         &self,
         item_id: Uuid,
-        name: &str,
-        name_en: &str,
-        selection_type: &str,
-        is_required: bool,
-        sort_order: i32,
-        options: &[ModifierOptionInput],
+        input: &ModifierGroupInput,
     ) -> AppResult<ModifierGroup> {
-        info!("Creating modifier group: {}", name);
+        info!("Creating modifier group: {}", input.name);
         let group = self
             .persistence
-            .create_modifier_group(
-                item_id,
-                name,
-                name_en,
-                selection_type,
-                is_required,
-                sort_order,
-                options,
-            )
+            .create_modifier_group(item_id, input)
             .await?;
         info!("Modifier group created: {}", group.id);
         Ok(group)
@@ -342,18 +315,10 @@ impl MenuUseCases {
     pub async fn update_modifier_group(
         &self,
         id: Uuid,
-        name: &str,
-        name_en: &str,
-        selection_type: &str,
-        is_required: bool,
-        sort_order: i32,
-        options: &[ModifierOptionInput],
+        input: &ModifierGroupInput,
     ) -> AppResult<ModifierGroup> {
         info!("Updating modifier group: {}", id);
-        let group = self
-            .persistence
-            .update_modifier_group(id, name, name_en, selection_type, is_required, sort_order, options)
-            .await?;
+        let group = self.persistence.update_modifier_group(id, input).await?;
         info!("Modifier group updated: {}", id);
         Ok(group)
     }
@@ -369,10 +334,7 @@ impl MenuUseCases {
     // ── Channel prices ──
 
     #[instrument(skip(self))]
-    pub async fn get_channel_prices_for_item(
-        &self,
-        item_id: Uuid,
-    ) -> AppResult<Vec<ChannelPrice>> {
+    pub async fn get_channel_prices_for_item(&self, item_id: Uuid) -> AppResult<Vec<ChannelPrice>> {
         info!("Fetching channel prices for item: {}", item_id);
         self.persistence.get_channel_prices_for_item(item_id).await
     }
@@ -384,7 +346,9 @@ impl MenuUseCases {
         prices: &[ChannelPriceInput],
     ) -> AppResult<()> {
         info!("Upserting channel prices for item: {}", item_id);
-        self.persistence.upsert_channel_prices(item_id, prices).await?;
+        self.persistence
+            .upsert_channel_prices(item_id, prices)
+            .await?;
         info!("Channel prices upserted for item: {}", item_id);
         Ok(())
     }
@@ -503,21 +467,16 @@ mod test {
         async fn create_modifier_group(
             &self,
             item_id: Uuid,
-            name: &str,
-            name_en: &str,
-            selection_type: &str,
-            is_required: bool,
-            sort_order: i32,
-            _options: &[ModifierOptionInput],
+            input: &ModifierGroupInput,
         ) -> AppResult<ModifierGroup> {
             Ok(ModifierGroup {
                 id: Uuid::new_v4(),
                 menu_item_id: item_id,
-                name: name.to_string(),
-                name_en: name_en.to_string(),
-                selection_type: selection_type.to_string(),
-                is_required,
-                sort_order,
+                name: input.name.clone(),
+                name_en: input.name_en.clone(),
+                selection_type: input.selection_type.clone(),
+                is_required: input.is_required,
+                sort_order: input.sort_order,
                 deleted_at: None,
                 created_at: Utc::now(),
                 updated_at: Utc::now(),
@@ -527,21 +486,16 @@ mod test {
         async fn update_modifier_group(
             &self,
             id: Uuid,
-            name: &str,
-            name_en: &str,
-            selection_type: &str,
-            is_required: bool,
-            sort_order: i32,
-            _options: &[ModifierOptionInput],
+            input: &ModifierGroupInput,
         ) -> AppResult<ModifierGroup> {
             Ok(ModifierGroup {
                 id,
                 menu_item_id: Uuid::new_v4(),
-                name: name.to_string(),
-                name_en: name_en.to_string(),
-                selection_type: selection_type.to_string(),
-                is_required,
-                sort_order,
+                name: input.name.clone(),
+                name_en: input.name_en.clone(),
+                selection_type: input.selection_type.clone(),
+                is_required: input.is_required,
+                sort_order: input.sort_order,
                 deleted_at: None,
                 created_at: Utc::now(),
                 updated_at: Utc::now(),

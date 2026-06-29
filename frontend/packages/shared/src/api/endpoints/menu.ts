@@ -36,8 +36,7 @@ export interface CreateMenuItemRequest {
   channel_prices: ChannelPrice[];
 }
 
-export interface UpdateMenuItemRequest
-  extends Partial<CreateMenuItemRequest> {}
+export type UpdateMenuItemRequest = Partial<CreateMenuItemRequest>;
 
 export interface CreateCategoryRequest {
   name: string;
@@ -45,8 +44,7 @@ export interface CreateCategoryRequest {
   sort_order: number;
 }
 
-export interface UpdateCategoryRequest
-  extends Partial<CreateCategoryRequest> {}
+export type UpdateCategoryRequest = Partial<CreateCategoryRequest>;
 
 // ── Endpoints factory ────────────────────────────────────────
 
