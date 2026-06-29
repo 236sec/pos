@@ -33,13 +33,15 @@ impl AuthPersistence for PostgresPersistence {
         .fetch_optional(&self.pool)
         .await?;
 
-        Ok(row.map(|(id, username, email, password_hash, updated_at)| User {
-            id,
-            username,
-            email,
-            password_hash,
-            created_at: updated_at.naive_utc(),
-        }))
+        Ok(
+            row.map(|(id, username, email, password_hash, updated_at)| User {
+                id,
+                username,
+                email,
+                password_hash,
+                created_at: updated_at.naive_utc(),
+            }),
+        )
     }
 
     async fn find_user_by_id(&self, id: Uuid) -> AppResult<Option<User>> {
@@ -50,13 +52,15 @@ impl AuthPersistence for PostgresPersistence {
         .fetch_optional(&self.pool)
         .await?;
 
-        Ok(row.map(|(id, username, email, password_hash, updated_at)| User {
-            id,
-            username,
-            email,
-            password_hash,
-            created_at: updated_at.naive_utc(),
-        }))
+        Ok(
+            row.map(|(id, username, email, password_hash, updated_at)| User {
+                id,
+                username,
+                email,
+                password_hash,
+                created_at: updated_at.naive_utc(),
+            }),
+        )
     }
 
     async fn find_roles_for_user(&self, user_id: Uuid) -> AppResult<Vec<Role>> {
@@ -84,7 +88,7 @@ impl AuthPersistence for PostgresPersistence {
         }
 
         let mut builder = QueryBuilder::new(
-            "SELECT DISTINCT p.id, p.resource, p.action FROM cached_permissions p JOIN cached_role_permissions rp ON rp.permission_id = p.id WHERE rp.role_id IN ("
+            "SELECT DISTINCT p.id, p.resource, p.action FROM cached_permissions p JOIN cached_role_permissions rp ON rp.permission_id = p.id WHERE rp.role_id IN (",
         );
 
         let mut first = true;
@@ -105,7 +109,11 @@ impl AuthPersistence for PostgresPersistence {
 
         Ok(rows
             .into_iter()
-            .map(|(id, resource, action)| Permission { id, resource, action })
+            .map(|(id, resource, action)| Permission {
+                id,
+                resource,
+                action,
+            })
             .collect())
     }
 

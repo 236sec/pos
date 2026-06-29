@@ -9,8 +9,8 @@ use serde::{Deserialize, Serialize};
 use tracing::{info, instrument, warn};
 use uuid::Uuid;
 
-use crate::application::app_error::AppResult;
 use crate::application::app_error::AppError;
+use crate::application::app_error::AppResult;
 use crate::domain::entities::auth::{Permission, Role, User};
 
 // ── Response / Request types ──────────────────────────────────────────────
@@ -117,7 +117,9 @@ impl AuthUseCases {
 
     /// Expose the last sync timestamp (used by the sync worker).
     #[instrument(skip(self))]
-    pub async fn get_last_sync_timestamp(&self) -> AppResult<Option<chrono::DateTime<chrono::Utc>>> {
+    pub async fn get_last_sync_timestamp(
+        &self,
+    ) -> AppResult<Option<chrono::DateTime<chrono::Utc>>> {
         self.persistence.get_last_sync_timestamp().await
     }
 
@@ -137,11 +139,7 @@ impl AuthUseCases {
     /// Authenticate a user by username and password.
     /// Falls back to cached credentials if the head office is unreachable.
     #[instrument(skip(self, password))]
-    pub async fn login(
-        &self,
-        username: &str,
-        password: &SecretString,
-    ) -> AppResult<LoginResponse> {
+    pub async fn login(&self, username: &str, password: &SecretString) -> AppResult<LoginResponse> {
         info!("Attempting login for user: {}", username);
 
         // 1. Try to find user in local cache first
@@ -213,8 +211,9 @@ impl AuthUseCases {
         .map_err(|e| AppError::AuthenticationError(format!("Invalid token: {}", e)))?;
 
         let claims = token_data.claims;
-        let user_id = Uuid::parse_str(&claims.sub)
-            .map_err(|e| AppError::AuthenticationError(format!("Invalid user id in token: {}", e)))?;
+        let user_id = Uuid::parse_str(&claims.sub).map_err(|e| {
+            AppError::AuthenticationError(format!("Invalid user id in token: {}", e))
+        })?;
 
         let user = self
             .persistence
@@ -301,14 +300,9 @@ impl AuthUseCases {
             }
         }
 
-        self.persistence
-            .update_sync_timestamp(Utc::now())
-            .await?;
+        self.persistence.update_sync_timestamp(Utc::now()).await?;
 
-        info!(
-            "Sync completed: {} users processed",
-            sync_users.len()
-        );
+        info!("Sync completed: {} users processed", sync_users.len());
 
         Ok(())
     }
@@ -324,7 +318,12 @@ mod test {
 
     #[async_trait]
     impl AuthPersistence for MockAuthPersistence {
-        async fn create_user(&self, _username: &str, _email: &str, _password_hash: &str) -> AppResult<()> {
+        async fn create_user(
+            &self,
+            _username: &str,
+            _email: &str,
+            _password_hash: &str,
+        ) -> AppResult<()> {
             Ok(())
         }
 
@@ -340,7 +339,10 @@ mod test {
             Ok(vec![])
         }
 
-        async fn find_permissions_for_roles(&self, _role_ids: &[Uuid]) -> AppResult<Vec<Permission>> {
+        async fn find_permissions_for_roles(
+            &self,
+            _role_ids: &[Uuid],
+        ) -> AppResult<Vec<Permission>> {
             Ok(vec![])
         }
 
@@ -364,7 +366,9 @@ mod test {
             Ok(())
         }
 
-        async fn get_last_sync_timestamp(&self) -> AppResult<Option<chrono::DateTime<chrono::Utc>>> {
+        async fn get_last_sync_timestamp(
+            &self,
+        ) -> AppResult<Option<chrono::DateTime<chrono::Utc>>> {
             Ok(None)
         }
 
@@ -398,9 +402,7 @@ mod test {
             "http://localhost:9999".into(),
         );
 
-        let result = use_cases
-            .login("unknown", &"password".into())
-            .await;
+        let result = use_cases.login("unknown", &"password".into()).await;
 
         assert!(result.is_err());
     }

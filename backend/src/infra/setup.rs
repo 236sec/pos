@@ -1,7 +1,7 @@
 use std::{fs::File, sync::Arc};
 
-use uuid::Uuid;
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
+use uuid::Uuid;
 
 use crate::{
     adapters::{http::app_state::AppState, persistence::PostgresPersistence},
@@ -18,8 +18,7 @@ pub async fn init_app_state() -> anyhow::Result<AppState> {
     let pool = init_db(&config.database_url).await?;
     let persistence = Arc::new(PostgresPersistence::new(pool));
 
-    let branch_id = Uuid::parse_str(&config.branch_id)
-        .expect("BRANCH_ID must be a valid UUID");
+    let branch_id = Uuid::parse_str(&config.branch_id).expect("BRANCH_ID must be a valid UUID");
 
     let auth_use_cases = Arc::new(AuthUseCases::new(
         persistence.clone(),

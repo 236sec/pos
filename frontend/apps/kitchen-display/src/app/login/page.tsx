@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LoginForm } from "@pos/shared/ui";
 import { useAuth } from "@pos/shared/hooks";
+import { ApiError } from "@pos/shared/api";
 import { env } from "@/env";
 
 export default function LoginPage() {
@@ -18,8 +19,14 @@ export default function LoginPage() {
     try {
       await login({ username, password });
       router.push("/");
-    } catch (e: any) {
-      setError(e?.body?.message || e?.message || "Login failed");
+    } catch (e: unknown) {
+      if (e instanceof ApiError) {
+        setError(e.body?.message || "Login failed");
+      } else if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Login failed");
+      }
     } finally {
       setLoading(false);
     }
