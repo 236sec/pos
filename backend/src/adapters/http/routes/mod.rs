@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod floor_plan;
 pub mod inventory;
 pub mod menu;
 pub mod notification;
@@ -19,4 +20,5 @@ pub fn router() -> Router<AppState> {
         .nest("/api/procurement", procurement::router())
         .nest("/api/report", report::router())
         .nest("/api/notification", notification::router())
+        .nest("/api/tables", floor_plan::router())
 }

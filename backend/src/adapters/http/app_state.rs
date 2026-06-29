@@ -2,6 +2,7 @@ use axum::extract::FromRef;
 use std::sync::Arc;
 
 use crate::application::use_cases::auth::AuthUseCases;
+use crate::application::use_cases::floor_plan::FloorPlanUseCases;
 use crate::application::use_cases::inventory::InventoryUseCases;
 use crate::application::use_cases::menu::MenuUseCases;
 use crate::application::use_cases::notification::NotificationUseCases;
@@ -14,6 +15,7 @@ use crate::infra::config::AppConfig;
 pub struct AppState {
     pub config: Arc<AppConfig>,
     pub auth_use_cases: Arc<AuthUseCases>,
+    pub floor_plan_use_cases: Arc<FloorPlanUseCases>,
     pub pos_use_cases: Arc<PosUseCases>,
     pub menu_use_cases: Arc<MenuUseCases>,
     pub inventory_use_cases: Arc<InventoryUseCases>,
@@ -25,6 +27,12 @@ pub struct AppState {
 impl FromRef<AppState> for Arc<AuthUseCases> {
     fn from_ref(state: &AppState) -> Self {
         state.auth_use_cases.clone()
+    }
+}
+
+impl FromRef<AppState> for Arc<FloorPlanUseCases> {
+    fn from_ref(state: &AppState) -> Self {
+        state.floor_plan_use_cases.clone()
     }
 }
 

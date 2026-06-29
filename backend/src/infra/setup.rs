@@ -6,9 +6,9 @@ use uuid::Uuid;
 use crate::{
     adapters::{http::app_state::AppState, persistence::PostgresPersistence},
     application::use_cases::{
-        auth::AuthUseCases, inventory::InventoryUseCases, menu::MenuUseCases,
-        notification::NotificationUseCases, pos::PosUseCases, procurement::ProcurementUseCases,
-        report::ReportUseCases,
+        auth::AuthUseCases, floor_plan::FloorPlanUseCases, inventory::InventoryUseCases,
+        menu::MenuUseCases, notification::NotificationUseCases, pos::PosUseCases,
+        procurement::ProcurementUseCases, report::ReportUseCases,
     },
     infra::{config::AppConfig, db::init_db, sync::spawn_sync_worker},
 };
@@ -26,6 +26,7 @@ pub async fn init_app_state() -> anyhow::Result<AppState> {
         branch_id,
         config.head_office_url.clone(),
     ));
+    let floor_plan_use_cases = Arc::new(FloorPlanUseCases::new(persistence.clone()));
     let pos_use_cases = Arc::new(PosUseCases::new(persistence.clone()));
     let menu_use_cases = Arc::new(MenuUseCases::new(persistence.clone()));
     let inventory_use_cases = Arc::new(InventoryUseCases::new(persistence.clone()));
@@ -39,6 +40,7 @@ pub async fn init_app_state() -> anyhow::Result<AppState> {
     Ok(AppState {
         config: Arc::new(config),
         auth_use_cases,
+        floor_plan_use_cases,
         pos_use_cases,
         menu_use_cases,
         inventory_use_cases,
