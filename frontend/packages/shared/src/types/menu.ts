@@ -41,24 +41,6 @@ export interface ModifierOption {
   price: Money;
 }
 
-export interface Table {
-  id: string;
-  name: string;
-  zone_id: string;
-  zone_name: string;
-  x: number;
-  y: number;
-  seats: number;
-  status: "available" | "occupied" | "dirty" | "reserved";
-  current_order_id: string | null;
-}
-
-export interface TableZone {
-  id: string;
-  name: string;
-  floor: number;
-}
-
 export interface Promotion {
   id: string;
   name: string;

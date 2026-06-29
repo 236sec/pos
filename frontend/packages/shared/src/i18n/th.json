@@ -14,5 +14,21 @@
     "empty": "ไม่มีข้อมูล",
     "yes": "ใช่",
     "no": "ไม่"
+  },
+  "floorPlan": {
+    "title": "ผังโต๊ะ",
+    "zones": "โซน",
+    "available": "ว่าง",
+    "occupied": "มีลูกค้า",
+    "dirty": "รอทำความสะอาด",
+    "reserved": "จองแล้ว",
+    "seats": "{count} ที่นั่ง",
+    "startOrder": "เริ่มออเดอร์",
+    "markDirty": "แจ้งทำความสะอาด",
+    "markClean": "แจ้งพร้อมใช้งาน",
+    "noTables": "ไม่มีโต๊ะในโซนนี้",
+    "tableDetails": "รายละเอียดโต๊ะ",
+    "currentOrder": "ออเดอร์ปัจจุบัน",
+    "viewOrder": "ดูออเดอร์"
   }
 }

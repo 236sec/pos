@@ -14,5 +14,21 @@
     "empty": "No data",
     "yes": "Yes",
     "no": "No"
+  },
+  "floorPlan": {
+    "title": "Floor Plan",
+    "zones": "Zones",
+    "available": "Available",
+    "occupied": "Occupied",
+    "dirty": "Dirty",
+    "reserved": "Reserved",
+    "seats": "{count} seats",
+    "startOrder": "Start Order",
+    "markDirty": "Mark Dirty",
+    "markClean": "Mark Available",
+    "noTables": "No tables in this zone",
+    "tableDetails": "Table Details",
+    "currentOrder": "Current Order",
+    "viewOrder": "View Order"
   }
 }
