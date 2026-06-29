@@ -1,5 +1,7 @@
 use std::{fs::File, sync::Arc};
+
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
+use uuid::Uuid;
 
 use crate::{
     adapters::{http::app_state::AppState, persistence::PostgresPersistence},
@@ -8,7 +10,7 @@ use crate::{
         notification::NotificationUseCases, pos::PosUseCases, procurement::ProcurementUseCases,
         report::ReportUseCases,
     },
-    infra::{config::AppConfig, db::init_db},
+    infra::{config::AppConfig, db::init_db, sync::spawn_sync_worker},
 };
 
 pub async fn init_app_state() -> anyhow::Result<AppState> {
@@ -16,13 +18,23 @@ pub async fn init_app_state() -> anyhow::Result<AppState> {
     let pool = init_db(&config.database_url).await?;
     let persistence = Arc::new(PostgresPersistence::new(pool));
 
-    let auth_use_cases = Arc::new(AuthUseCases::new(persistence.clone()));
+    let branch_id = Uuid::parse_str(&config.branch_id).expect("BRANCH_ID must be a valid UUID");
+
+    let auth_use_cases = Arc::new(AuthUseCases::new(
+        persistence.clone(),
+        config.jwt_secret.clone(),
+        branch_id,
+        config.head_office_url.clone(),
+    ));
     let pos_use_cases = Arc::new(PosUseCases::new(persistence.clone()));
     let menu_use_cases = Arc::new(MenuUseCases::new(persistence.clone()));
     let inventory_use_cases = Arc::new(InventoryUseCases::new(persistence.clone()));
     let procurement_use_cases = Arc::new(ProcurementUseCases::new(persistence.clone()));
     let report_use_cases = Arc::new(ReportUseCases::new(persistence.clone()));
     let notification_use_cases = Arc::new(NotificationUseCases::new(persistence.clone()));
+
+    // Spawn the background sync worker for auth credential caching
+    spawn_sync_worker(auth_use_cases.clone());
 
     Ok(AppState {
         config: Arc::new(config),
