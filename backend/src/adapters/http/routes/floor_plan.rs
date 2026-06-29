@@ -14,9 +14,7 @@ use uuid::Uuid;
 use crate::{
     adapters::http::app_state::AppState,
     application::use_cases::floor_plan::FloorPlanUseCases,
-    domain::entities::floor_plan::{
-        CreateReservationRequest, Table, UpdateTableStatusRequest,
-    },
+    domain::entities::floor_plan::{CreateReservationRequest, Table, UpdateTableStatusRequest},
 };
 
 #[derive(Debug, Deserialize)]
@@ -114,14 +112,20 @@ async fn reserve(
     Path(id): Path<Uuid>,
     Json(body): Json<CreateReservationRequest>,
 ) -> Result<Json<Value>, crate::application::app_error::AppError> {
-    let start_time = NaiveDateTime::parse_from_str(&body.start_time, "%Y-%m-%dT%H:%M:%S")
-        .map_err(|e| crate::application::app_error::AppError::Internal(format!(
-            "Invalid start_time format: {}. Expected ISO 8601 (YYYY-MM-DDTHH:MM:SS)", e
-        )))?;
-    let end_time = NaiveDateTime::parse_from_str(&body.end_time, "%Y-%m-%dT%H:%M:%S")
-        .map_err(|e| crate::application::app_error::AppError::Internal(format!(
-            "Invalid end_time format: {}. Expected ISO 8601 (YYYY-MM-DDTHH:MM:SS)", e
-        )))?;
+    let start_time =
+        NaiveDateTime::parse_from_str(&body.start_time, "%Y-%m-%dT%H:%M:%S").map_err(|e| {
+            crate::application::app_error::AppError::Internal(format!(
+                "Invalid start_time format: {}. Expected ISO 8601 (YYYY-MM-DDTHH:MM:SS)",
+                e
+            ))
+        })?;
+    let end_time =
+        NaiveDateTime::parse_from_str(&body.end_time, "%Y-%m-%dT%H:%M:%S").map_err(|e| {
+            crate::application::app_error::AppError::Internal(format!(
+                "Invalid end_time format: {}. Expected ISO 8601 (YYYY-MM-DDTHH:MM:SS)",
+                e
+            ))
+        })?;
 
     let reservation = state
         .reserve_table(id, &body.customer_name, start_time, end_time)

@@ -158,11 +158,7 @@ mod test {
             }))
         }
 
-        async fn update_table_status(
-            &self,
-            id: Uuid,
-            _new_status: &str,
-        ) -> AppResult<Table> {
+        async fn update_table_status(&self, id: Uuid, _new_status: &str) -> AppResult<Table> {
             Ok(Table {
                 id,
                 name: "Test Table".to_string(),
@@ -232,11 +228,7 @@ mod test {
                 Ok(None)
             }
 
-            async fn update_table_status(
-                &self,
-                _id: Uuid,
-                _new_status: &str,
-            ) -> AppResult<Table> {
+            async fn update_table_status(&self, _id: Uuid, _new_status: &str) -> AppResult<Table> {
                 unreachable!()
             }
 
@@ -297,11 +289,7 @@ mod test {
                 }))
             }
 
-            async fn update_table_status(
-                &self,
-                _id: Uuid,
-                _new_status: &str,
-            ) -> AppResult<Table> {
+            async fn update_table_status(&self, _id: Uuid, _new_status: &str) -> AppResult<Table> {
                 unreachable!()
             }
 

@@ -5,9 +5,7 @@ use chrono::NaiveDateTime;
 use uuid::Uuid;
 
 use pos::application::app_error::AppResult;
-use pos::application::use_cases::floor_plan::{
-    FloorPlanPersistence, FloorPlanUseCases,
-};
+use pos::application::use_cases::floor_plan::{FloorPlanPersistence, FloorPlanUseCases};
 use pos::domain::entities::floor_plan::{Reservation, Table, TableWithZone};
 
 struct MockFloorPlanPersistence {
@@ -34,10 +32,7 @@ impl FloorPlanPersistence for MockFloorPlanPersistence {
             .iter()
             .filter(|t| {
                 let match_zone = zone_id.map(|z| t.zone_id == z).unwrap_or(true);
-                let match_status = status
-                    .as_ref()
-                    .map(|s| t.status == *s)
-                    .unwrap_or(true);
+                let match_status = status.as_ref().map(|s| t.status == *s).unwrap_or(true);
                 match_zone && match_status
             })
             .cloned()

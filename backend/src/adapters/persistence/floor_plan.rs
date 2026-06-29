@@ -4,10 +4,7 @@ use uuid::Uuid;
 
 use crate::{
     adapters::persistence::PostgresPersistence,
-    application::{
-        app_error::AppResult,
-        use_cases::floor_plan::FloorPlanPersistence,
-    },
+    application::{app_error::AppResult, use_cases::floor_plan::FloorPlanPersistence},
     domain::entities::floor_plan::{Reservation, Table, TableWithZone},
 };
 
@@ -65,9 +62,10 @@ impl FloorPlanPersistence for PostgresPersistence {
             .rows_affected();
 
         if rows_affected == 0 {
-            return Err(crate::application::app_error::AppError::NotFound(
-                format!("Table {} not found", id),
-            ));
+            return Err(crate::application::app_error::AppError::NotFound(format!(
+                "Table {} not found",
+                id
+            )));
         }
 
         // Secondary query to get zone_name via JOIN
