@@ -33,7 +33,9 @@ export class ApiClient {
   ): Promise<T> {
     const url = new URL(`${this.baseUrl}${path}`);
     if (params) {
-      Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+      Object.entries(params).forEach(([key, value]) =>
+        url.searchParams.set(key, value),
+      );
     }
 
     const token = this.getToken();

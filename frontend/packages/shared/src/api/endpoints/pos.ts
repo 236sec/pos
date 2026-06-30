@@ -8,11 +8,9 @@ export function createPosEndpoints(client: ApiClient) {
     createOrder: (data: Record<string, unknown>) =>
       client.post<Order>("/orders", data),
 
-    getOrder: (id: string) =>
-      client.get<Order>(`/orders/${id}`),
+    getOrder: (id: string) => client.get<Order>(`/orders/${id}`),
 
-    getActiveOrders: () =>
-      client.get<Order[]>("/orders/active"),
+    getActiveOrders: () => client.get<Order[]>("/orders/active"),
 
     addItem: (orderId: string, data: Record<string, unknown>) =>
       client.post<Order>(`/orders/${orderId}/items`, data),
@@ -45,10 +43,11 @@ export function createPosEndpoints(client: ApiClient) {
       client.post<Shift>("/shifts/open", { starting_float: startingFloat }),
 
     closeShift: (shiftId: string, endingCash: number) =>
-      client.post<Shift>(`/shifts/${shiftId}/close`, { ending_cash: endingCash }),
+      client.post<Shift>(`/shifts/${shiftId}/close`, {
+        ending_cash: endingCash,
+      }),
 
-    getCurrentShift: () =>
-      client.get<Shift | null>("/shifts/current"),
+    getCurrentShift: () => client.get<Shift | null>("/shifts/current"),
   };
 }
 

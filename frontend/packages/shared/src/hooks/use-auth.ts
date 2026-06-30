@@ -19,13 +19,16 @@ export function useAuth(apiUrl: string) {
     return new ApiClient(apiUrl, getToken);
   }, [apiUrl, getToken]);
 
-  const login = useCallback(async (req: LoginRequest): Promise<LoginResponse> => {
-    const c = new ApiClient(apiUrl, () => null);
-    const res = await c.post<LoginResponse>("/auth/login", req);
-    localStorage.setItem(TOKEN_KEY, res.token);
-    setUser(res.user);
-    return res;
-  }, [apiUrl]);
+  const login = useCallback(
+    async (req: LoginRequest): Promise<LoginResponse> => {
+      const c = new ApiClient(apiUrl, () => null);
+      const res = await c.post<LoginResponse>("/auth/login", req);
+      localStorage.setItem(TOKEN_KEY, res.token);
+      setUser(res.user);
+      return res;
+    },
+    [apiUrl],
+  );
 
   const logout = useCallback(async () => {
     const c = client();

@@ -33,9 +33,11 @@ export type PaymentMethod = "Cash" | "PromptPay";
 
 export type OrderChannel = "DineIn" | "Takeaway" | "Delivery";
 
-export type OrderStatus = "draft" | "placed" | "in_kitchen" | "served" | "completed" | "voided";
+export type OrderStatus =
+  "draft" | "placed" | "in_kitchen" | "served" | "completed" | "voided";
 
-export type KitchenItemStatus = "waiting" | "in_progress" | "done" | "out_of_stock";
+export type KitchenItemStatus =
+  "waiting" | "in_progress" | "done" | "out_of_stock";
 
 export type TableStatus = "available" | "occupied" | "dirty" | "reserved";
 

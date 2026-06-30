@@ -2,7 +2,8 @@ import * as React from "react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export type BadgeVariant = "default" | "success" | "warning" | "destructive" | "outline";
+export type BadgeVariant =
+  "default" | "success" | "warning" | "destructive" | "outline";
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: BadgeVariant;
@@ -10,13 +11,20 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const variantClasses: Record<BadgeVariant, string> = {
   default: "bg-primary text-primary-foreground hover:bg-primary/80",
-  success: "bg-emerald-400/15 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
-  warning: "bg-amber-400/15 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
-  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/80",
+  success:
+    "bg-emerald-400/15 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
+  warning:
+    "bg-amber-400/15 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  destructive:
+    "bg-destructive text-destructive-foreground hover:bg-destructive/80",
   outline: "text-foreground border",
 };
 
-export function Badge({ className, variant = "default", ...props }: BadgeProps) {
+export function Badge({
+  className,
+  variant = "default",
+  ...props
+}: BadgeProps) {
   return (
     <div
       className={twMerge(

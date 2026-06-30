@@ -1,5 +1,11 @@
 import { useTranslations } from "next-intl";
-import { Card, CardHeader, CardTitle, CardContent, Badge } from "@pos/shared/ui";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Badge,
+} from "@pos/shared/ui";
 
 export default function HomePage() {
   const t = useTranslations("app");

@@ -56,12 +56,10 @@ export function createMenuEndpoints(client: ApiClient) {
       client.post<MenuItem>("/menu/items", data),
     updateItem: (id: string, data: UpdateMenuItemRequest) =>
       client.put<MenuItem>(`/menu/items/${id}`, data),
-    deleteItem: (id: string) =>
-      client.delete<void>(`/menu/items/${id}`),
+    deleteItem: (id: string) => client.delete<void>(`/menu/items/${id}`),
 
     // Categories
-    getCategories: () =>
-      client.get<MenuCategory[]>("/menu/categories"),
+    getCategories: () => client.get<MenuCategory[]>("/menu/categories"),
     createCategory: (data: CreateCategoryRequest) =>
       client.post<MenuCategory>("/menu/categories", data),
     updateCategory: (id: string, data: UpdateCategoryRequest) =>
@@ -78,8 +76,7 @@ export function createMenuEndpoints(client: ApiClient) {
       client.post<Table>(`/tables/${id}/reserve`, data),
 
     // Promotions
-    getActivePromotions: () =>
-      client.get<Promotion[]>("/promotions/active"),
+    getActivePromotions: () => client.get<Promotion[]>("/promotions/active"),
   };
 }
 
