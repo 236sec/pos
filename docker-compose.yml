@@ -38,6 +38,10 @@ services:
       REDIS_URL: redis://redis:6379
       RUST_LOG: pos=debug,tower_http=debug,sqlx=warn
       BIND_ADDR: 0.0.0.0:8000
+      JWT_SECRET: dev-jwt-secret-change-in-production
+      BRANCH_ID: 00000000-0000-0000-0000-000000000001
+      HEAD_OFFICE_URL: http://head-office:9000
+      AUTH_BYPASS: "true"
     networks:
       - app-network
 

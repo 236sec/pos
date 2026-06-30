@@ -24,6 +24,12 @@ pub struct AppState {
     pub notification_use_cases: Arc<NotificationUseCases>,
 }
 
+impl FromRef<AppState> for Arc<AppConfig> {
+    fn from_ref(state: &AppState) -> Self {
+        state.config.clone()
+    }
+}
+
 impl FromRef<AppState> for Arc<AuthUseCases> {
     fn from_ref(state: &AppState) -> Self {
         state.auth_use_cases.clone()
