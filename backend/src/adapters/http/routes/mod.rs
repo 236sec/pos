@@ -13,12 +13,12 @@ use crate::adapters::http::app_state::AppState;
 
 pub fn router() -> Router<AppState> {
     Router::new()
-        .nest("/api/auth", auth::router())
-        .nest("/api/pos", pos::router())
-        .nest("/api/menu", menu::router())
-        .nest("/api/inventory", inventory::router())
-        .nest("/api/procurement", procurement::router())
-        .nest("/api/report", report::router())
-        .nest("/api/notification", notification::router())
-        .nest("/api/tables", floor_plan::router())
+        .nest("/auth", auth::router())
+        .nest("/pos", pos::router())
+        .nest("/menu", menu::router())
+        .nest("/inventory", inventory::router())
+        .nest("/procurement", procurement::router())
+        .nest("/report", report::router())
+        .nest("/notification", notification::router())
+        .nest("/tables", floor_plan::router())
 }

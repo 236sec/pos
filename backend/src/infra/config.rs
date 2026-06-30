@@ -6,6 +6,7 @@ pub struct AppConfig {
     pub head_office_url: String,
     pub jwt_secret: String,
     pub branch_id: String,
+    pub auth_bypass: bool,
 }
 
 impl AppConfig {
@@ -18,6 +19,9 @@ impl AppConfig {
             std::env::var("HEAD_OFFICE_URL").unwrap_or_else(|_| "http://localhost:9000".into());
         let jwt_secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set");
         let branch_id = std::env::var("BRANCH_ID").expect("BRANCH_ID must be set");
+        let auth_bypass = std::env::var("AUTH_BYPASS")
+            .map(|v| v == "true" || v == "1")
+            .unwrap_or(false);
 
         Self {
             database_url,
@@ -26,6 +30,7 @@ impl AppConfig {
             head_office_url,
             jwt_secret,
             branch_id,
+            auth_bypass,
         }
     }
 }
