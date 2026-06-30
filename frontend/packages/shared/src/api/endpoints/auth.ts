@@ -8,14 +8,15 @@ export function createAuthEndpoints(client: ApiClient) {
     login: (req: LoginRequest) =>
       client.post<LoginResponse>("/auth/login", req),
 
-    logout: () =>
-      client.post<void>("/auth/logout"),
+    logout: () => client.post<void>("/auth/logout"),
 
-    me: () =>
-      client.get<User>("/auth/me"),
+    me: () => client.get<User>("/auth/me"),
 
     changePassword: (current: string, newPassword: string) =>
-      client.put<void>("/auth/password", { current_password: current, new_password: newPassword }),
+      client.put<void>("/auth/password", {
+        current_password: current,
+        new_password: newPassword,
+      }),
   };
 }
 

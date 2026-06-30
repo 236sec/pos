@@ -1,10 +1,14 @@
 import { ApiClient } from "../client";
-import type { Ingredient, StockMovement, Recipe, StockAdjustment } from "../../types";
+import type {
+  Ingredient,
+  StockMovement,
+  Recipe,
+  StockAdjustment,
+} from "../../types";
 
 export function createInventoryEndpoints(client: ApiClient) {
   return {
-    getStock: () =>
-      client.get<Ingredient[]>("/inventory"),
+    getStock: () => client.get<Ingredient[]>("/inventory"),
 
     getMovements: (ingredientId: string) =>
       client.get<StockMovement[]>(`/inventory/${ingredientId}/movements`),

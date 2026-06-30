@@ -16,7 +16,9 @@ export function ThemeSwitcher({ className }: { className?: string }) {
           className,
         ),
       )}
-      aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+      aria-label={
+        theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+      }
       type="button"
     >
       {theme === "dark" ? (

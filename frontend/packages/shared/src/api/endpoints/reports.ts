@@ -1,10 +1,19 @@
 import { ApiClient } from "../client";
-import type { DailySummary, ShiftReport, MenuPerformanceItem, InventoryValuation, CogsReport } from "../../types";
+import type {
+  DailySummary,
+  ShiftReport,
+  MenuPerformanceItem,
+  InventoryValuation,
+  CogsReport,
+} from "../../types";
 
 export function createReportEndpoints(client: ApiClient) {
   return {
     getDailySummary: (date?: string) =>
-      client.get<DailySummary>("/reports/daily-summary", date ? { date } : undefined),
+      client.get<DailySummary>(
+        "/reports/daily-summary",
+        date ? { date } : undefined,
+      ),
 
     getShiftReport: (shiftId: string) =>
       client.get<ShiftReport>(`/reports/shift?shift_id=${shiftId}`),

@@ -188,18 +188,16 @@ export default function MenuPage() {
   // ── Data state ───────────────────────────────────────────────
   const [items, setItems] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<MenuCategory[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<
-    string | null
-  >(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // ── Drawer state ─────────────────────────────────────────────
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
-  const [formState, setFormState] = useState<ItemFormState>(
-    emptyFormState(""),
-  );
+  const [formState, setFormState] = useState<ItemFormState>(emptyFormState(""));
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -273,15 +271,12 @@ export default function MenuPage() {
     setDrawerOpen(true);
   }, [categories]);
 
-  const openEditDrawer = useCallback(
-    (item: MenuItem) => {
-      setEditingItem(item);
-      setFormState(itemToFormState(item));
-      setSaveError(null);
-      setDrawerOpen(true);
-    },
-    [],
-  );
+  const openEditDrawer = useCallback((item: MenuItem) => {
+    setEditingItem(item);
+    setFormState(itemToFormState(item));
+    setSaveError(null);
+    setDrawerOpen(true);
+  }, []);
 
   const closeDrawer = useCallback(() => {
     setDrawerOpen(false);
@@ -449,7 +444,12 @@ export default function MenuPage() {
   }, []);
 
   const updateModifierOption = useCallback(
-    (gi: number, oi: number, field: keyof ModifierOptionForm, value: unknown) => {
+    (
+      gi: number,
+      oi: number,
+      field: keyof ModifierOptionForm,
+      value: unknown,
+    ) => {
       setFormState((prev) => {
         const group = prev.modifier_groups[gi];
         if (!group) return prev;
@@ -607,7 +607,9 @@ export default function MenuPage() {
                       </td>
                       <td className="py-3 pr-4">
                         <Badge
-                          variant={item.is_available ? "success" : "destructive"}
+                          variant={
+                            item.is_available ? "success" : "destructive"
+                          }
                         >
                           {item.is_available ? "Active" : "Inactive"}
                         </Badge>
@@ -644,10 +646,7 @@ export default function MenuPage() {
       {drawerOpen && (
         <div className="fixed inset-0 z-50 flex">
           {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50"
-            onClick={closeDrawer}
-          />
+          <div className="fixed inset-0 bg-black/50" onClick={closeDrawer} />
           {/* Panel */}
           <div className="relative ml-auto h-full w-full max-w-2xl overflow-y-auto bg-background shadow-xl">
             {/* Drawer header */}
@@ -671,9 +670,7 @@ export default function MenuPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium">
-                        Name (Thai)
-                      </label>
+                      <label className="text-sm font-medium">Name (Thai)</label>
                       <Input
                         value={formState.name}
                         onChange={(e) =>
@@ -683,9 +680,7 @@ export default function MenuPage() {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium">
-                        Name (EN)
-                      </label>
+                      <label className="text-sm font-medium">Name (EN)</label>
                       <Input
                         value={formState.name_en}
                         onChange={(e) =>
@@ -757,10 +752,7 @@ export default function MenuPage() {
                           type="checkbox"
                           checked={formState.is_available}
                           onChange={(e) =>
-                            updateFormField(
-                              "is_available",
-                              e.target.checked,
-                            )
+                            updateFormField("is_available", e.target.checked)
                           }
                           className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                         />
@@ -795,10 +787,7 @@ export default function MenuPage() {
                   )}
 
                   {formState.modifier_groups.map((group, gi) => (
-                    <div
-                      key={gi}
-                      className="rounded-lg border p-4 space-y-3"
-                    >
+                    <div key={gi} className="rounded-lg border p-4 space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">
                           Group #{gi + 1}
@@ -833,11 +822,7 @@ export default function MenuPage() {
                           <Input
                             value={group.name_en}
                             onChange={(e) =>
-                              updateModifierGroup(
-                                gi,
-                                "name_en",
-                                e.target.value,
-                              )
+                              updateModifierGroup(gi, "name_en", e.target.value)
                             }
                             placeholder="Group name"
                           />
@@ -1005,9 +990,7 @@ export default function MenuPage() {
 
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium">
-                        Dine-in (฿)
-                      </label>
+                      <label className="text-sm font-medium">Dine-in (฿)</label>
                       <Input
                         type="number"
                         step="0.01"
@@ -1020,9 +1003,11 @@ export default function MenuPage() {
                         onChange={(e) =>
                           updateChannelPrice("DineIn", e.target.value)
                         }
-                        placeholder={formState.base_price
-                          ? formatBaht(formState.base_price)
-                          : "0.00"}
+                        placeholder={
+                          formState.base_price
+                            ? formatBaht(formState.base_price)
+                            : "0.00"
+                        }
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -1041,9 +1026,11 @@ export default function MenuPage() {
                         onChange={(e) =>
                           updateChannelPrice("Takeaway", e.target.value)
                         }
-                        placeholder={formState.base_price
-                          ? formatBaht(formState.base_price)
-                          : "0.00"}
+                        placeholder={
+                          formState.base_price
+                            ? formatBaht(formState.base_price)
+                            : "0.00"
+                        }
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -1062,9 +1049,11 @@ export default function MenuPage() {
                         onChange={(e) =>
                           updateChannelPrice("Delivery", e.target.value)
                         }
-                        placeholder={formState.base_price
-                          ? formatBaht(formState.base_price)
-                          : "0.00"}
+                        placeholder={
+                          formState.base_price
+                            ? formatBaht(formState.base_price)
+                            : "0.00"
+                        }
                       />
                     </div>
                   </div>
