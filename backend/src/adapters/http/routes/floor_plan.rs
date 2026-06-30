@@ -14,7 +14,9 @@ use uuid::Uuid;
 use crate::{
     adapters::http::app_state::AppState,
     application::use_cases::floor_plan::FloorPlanUseCases,
-    domain::entities::floor_plan::{CreateReservationRequest, Table, UpdateTableStatusRequest},
+    domain::entities::floor_plan::{
+        CreateReservationRequest, Reservation, Table, TableWithZone, UpdateTableStatusRequest,
+    },
 };
 
 #[derive(Debug, Deserialize)]
@@ -84,16 +86,16 @@ async fn list_tables(
         }
     }
 
-    Ok(Json(json!({ "data": zones })))
+    Ok(Json(json!({ "zones": zones })))
 }
 
 #[instrument(skip(state))]
 async fn get_table(
     State(state): State<Arc<FloorPlanUseCases>>,
     Path(id): Path<Uuid>,
-) -> Result<Json<Value>, crate::application::app_error::AppError> {
+) -> Result<Json<TableWithZone>, crate::application::app_error::AppError> {
     let table = state.get_table(id).await?;
-    Ok(Json(json!({ "data": table })))
+    Ok(Json(table))
 }
 
 #[instrument(skip(state))]
@@ -101,9 +103,9 @@ async fn update_status(
     State(state): State<Arc<FloorPlanUseCases>>,
     Path(id): Path<Uuid>,
     Json(body): Json<UpdateTableStatusRequest>,
-) -> Result<Json<Value>, crate::application::app_error::AppError> {
+) -> Result<Json<Table>, crate::application::app_error::AppError> {
     let table = state.update_status(id, &body.status).await?;
-    Ok(Json(json!({ "data": table })))
+    Ok(Json(table))
 }
 
 #[instrument(skip(state))]
@@ -111,7 +113,7 @@ async fn reserve(
     State(state): State<Arc<FloorPlanUseCases>>,
     Path(id): Path<Uuid>,
     Json(body): Json<CreateReservationRequest>,
-) -> Result<Json<Value>, crate::application::app_error::AppError> {
+) -> Result<Json<Reservation>, crate::application::app_error::AppError> {
     let start_time =
         NaiveDateTime::parse_from_str(&body.start_time, "%Y-%m-%dT%H:%M:%S").map_err(|e| {
             crate::application::app_error::AppError::Internal(format!(
@@ -131,5 +133,5 @@ async fn reserve(
         .reserve_table(id, &body.customer_name, start_time, end_time)
         .await?;
 
-    Ok(Json(json!({ "data": reservation })))
+    Ok(Json(reservation))
 }
