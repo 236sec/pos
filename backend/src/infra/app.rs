@@ -1,5 +1,4 @@
-use axum::{Router, http};
-use http::header::{AUTHORIZATION, CONTENT_TYPE};
+use axum::Router;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
 use uuid::Uuid;
 
@@ -11,22 +10,14 @@ use crate::{
 pub fn create_app(app_state: AppState) -> Router {
     init_tracing();
 
-    let cors = CorsLayer::new()
-        .allow_origin(
-            "http://localhost:5173"
-                .parse::<http::HeaderValue>()
-                .unwrap(),
-        )
-        .allow_methods([http::Method::POST, http::Method::GET])
-        .allow_headers([CONTENT_TYPE, AUTHORIZATION])
-        .allow_credentials(true);
+    let cors = CorsLayer::permissive();
 
     Router::new()
         .nest("/api", adapters::http::routes::router())
         .with_state(app_state)
         .layer(cors)
         .layer(
-            TraceLayer::new_for_http().make_span_with(|request: &http::Request<_>| {
+            TraceLayer::new_for_http().make_span_with(|request: &axum::http::Request<_>| {
                 let request_id = Uuid::new_v4();
                 tracing::info_span!(
                     "http-request",
