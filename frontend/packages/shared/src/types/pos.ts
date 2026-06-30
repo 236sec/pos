@@ -65,6 +65,32 @@ export interface Shift {
   status: "open" | "closed";
 }
 
+export interface Table {
+  id: string;
+  name: string;
+  zone_id: string;
+  zone_name: string;
+  x: number;
+  y: number;
+  seats: number;
+  status: "available" | "occupied" | "dirty" | "reserved";
+  current_order_id: string | null;
+}
+
+export interface TableZone {
+  id: string;
+  name: string;
+  floor: number;
+}
+
+export interface Reservation {
+  id: string;
+  table_id: string;
+  customer_name: string;
+  start_time: string;
+  end_time: string;
+}
+
 export interface VoidRequest {
   id: string;
   order_id: string;

@@ -3,6 +3,7 @@ use sqlx::PgPool;
 use crate::application::app_error::AppError;
 
 pub mod auth;
+pub mod floor_plan;
 pub mod inventory;
 pub mod menu;
 pub mod notification;

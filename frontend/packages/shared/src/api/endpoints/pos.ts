@@ -1,5 +1,5 @@
 import { ApiClient } from "../client";
-import type { Order, Bill, Payment, Shift, VoidRequest } from "../../types";
+import type { Order, Bill, Payment, Shift, VoidRequest, Table, TableZone, Reservation } from "../../types";
 
 // Stub endpoints — return empty arrays. Real implementation in future issues.
 
@@ -49,6 +49,19 @@ export function createPosEndpoints(client: ApiClient) {
 
     getCurrentShift: () =>
       client.get<Shift | null>("/shifts/current"),
+
+    // Table/Floor Plan endpoints
+    getTables: (params?: { zone_id?: string; status?: string }) =>
+      client.get<{ zones: Array<TableZone & { tables: Table[] }> }>("/tables", params as Record<string, string>),
+
+    getTable: (id: string) =>
+      client.get<Table>(`/tables/${id}`),
+
+    updateTableStatus: (id: string, status: string) =>
+      client.put<Table>(`/tables/${id}/status`, { status }),
+
+    reserveTable: (id: string, data: { customer_name: string; start_time: string; end_time: string }) =>
+      client.post<Reservation>(`/tables/${id}/reserve`, data),
   };
 }
 
